@@ -1,3 +1,4 @@
+// src/components/SiteFooter.tsx
 export const SiteFooter = () => {
   return (
     <footer className="relative z-10 border-t border-border/60 bg-background/60 backdrop-blur">
@@ -8,10 +9,9 @@ export const SiteFooter = () => {
           <p className="mt-2 text-xs opacity-70">582, 10th Main Road, ISRO Layout, Bengaluru, Karnataka, 560076</p>
         </div>
         <nav className="flex gap-6 justify-center text-sm">
-          <a href="/" className="opacity-80 hover:opacity-100 transition">Home</a>
-          <a href="/shop" className="opacity-80 hover:opacity-100 transition">Shop</a>
-          <a href="/about" className="opacity-80 hover:opacity-100 transition">About</a>
-          <a href="/contact" className="opacity-80 hover:opacity-100 transition">Contact</a>
+          <a href="#" className="opacity-80 hover:opacity-100 transition">Home</a>
+          <a href="#about" className="opacity-80 hover:opacity-100 transition">About</a>
+          <a href="#contact" className="opacity-80 hover:opacity-100 transition">Contact</a>
         </nav>
         <div className="text-sm md:text-right opacity-70">© {new Date().getFullYear()} MINIMO</div>
       </div>
