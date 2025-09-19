@@ -6,8 +6,8 @@ import Script from "next/script";
 import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
-  title: "MINIMO — Retail Bangalore",
-  description: "MINIMO: Futuristic retail experience in Bangalore. Comet-inspired UI with immersive 3D shopping.",
+  title: "Minimo Retail — Your One-Stop Shop in Bangalore",
+  description: "Minimo Retail: Your one-stop shop in Bangalore for toys, viral products, cosmetics, décor, bags, stationery & daily essentials—all at the lowest prices.",
 };
 
 export default function RootLayout({

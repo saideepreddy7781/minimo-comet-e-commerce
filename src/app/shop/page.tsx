@@ -19,19 +19,19 @@ export default function ShopPage() {
   );
 
   return (
-    <main className="max-w-7xl mx-auto px-6 py-16">
+    <main className="max-w-7xl mx-auto px-6 py-16 pt-24">
       <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">Shop</h1>
       <div className="mt-6 flex flex-col md:flex-row md:items-center gap-4">
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search products..."
-          className="h-11 w-full md:w-80 rounded-full border border-[#E4002B]/30 bg-white/80 dark:bg-white/10 px-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#E4002B]/50"
+          className="h-11 w-full md:w-80 rounded-full border border-[#FFD700]/30 bg-white/80 dark:bg-white/10 px-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#FFD700]/50"
         />
         <div className="flex items-center gap-2 flex-wrap">
-          <button onClick={() => setCat("all")} className={`h-9 px-4 rounded-full border ${cat === "all" ? "bg-[#E4002B] text-white border-transparent shadow-sm" : "bg-white text-[#E4002B] border-[#E4002B]/30 hover:bg-[#E4002B]/10"}`}>All</button>
+          <button onClick={() => setCat("all")} className={`h-9 px-4 rounded-full border ${cat === "all" ? "bg-[#FFD700] text-black border-transparent shadow-sm" : "bg-white text-[#FFD700] border-[#FFD700]/30 hover:bg-[#FFD700]/10"}`}>All</button>
           {categories.map((c) => (
-            <button key={c} onClick={() => setCat(c)} className={`h-9 px-4 rounded-full border ${cat === c ? "bg-[#E4002B] text-white border-transparent shadow-sm" : "bg-white text-[#E4002B] border-[#E4002B]/30 hover:bg-[#E4002B]/10"}`}>{c}</button>
+            <button key={c} onClick={() => setCat(c)} className={`h-9 px-4 rounded-full border ${cat === c ? "bg-[#FFD700] text-black border-transparent shadow-sm" : "bg-white text-[#FFD700] border-[#FFD700]/30 hover:bg-[#FFD700]/10"}`}>{c}</button>
           ))}
         </div>
       </div>

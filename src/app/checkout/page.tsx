@@ -6,7 +6,7 @@ export default function CheckoutPage() {
   const { items, subtotal, clear } = useCart();
 
   return (
-    <main className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-5 gap-10">
+    <main className="max-w-6xl mx-auto px-6 py-16 pt-24 grid grid-cols-1 lg:grid-cols-5 gap-10">
       <section className="lg:col-span-3">
         <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">Checkout</h1>
         <form className="mt-6 space-y-4">

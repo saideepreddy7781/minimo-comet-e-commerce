@@ -10,7 +10,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   if (!product) return notFound();
 
   return (
-    <main className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-8">
+    <main className="max-w-6xl mx-auto px-6 py-16 pt-24 grid grid-cols-1 md:grid-cols-2 gap-8">
       <div className="rounded-2xl overflow-hidden border border-white/10 bg-white/20 dark:bg-black/20 backdrop-blur">
         <img src={product.image} alt={product.name} className="w-full h-[420px] object-cover" />
         <div className="grid grid-cols-4 gap-2 p-3">
