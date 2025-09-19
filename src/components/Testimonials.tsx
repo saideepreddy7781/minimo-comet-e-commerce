@@ -1,3 +1,4 @@
+// src/components/Testimonials.tsx
 export const Testimonials = () => {
   return (
     <section id="testimonials" className="relative z-10 max-w-6xl mx-auto px-6 pb-20 md:pb-28">
@@ -13,7 +14,7 @@ export const Testimonials = () => {
         ].map((t) => (
           <figure
             key={t.name}
-            className="rounded-2xl border border-white/10 bg-white/30 dark:bg-black/30 backdrop-blur-xl p-6 shadow-[inset_0_0_1px_rgba(255,255,255,0.3),0_24px_90px_-30px_rgba(99,102,241,0.45)] hover:shadow-[inset_0_0_1px_rgba(255,255,255,0.35),0_36px_140px_-30px_rgba(99,102,241,0.55)] transition duration-300"
+            className="rounded-2xl border border-white/10 bg-white/30 dark:bg-black/30 backdrop-blur-xl p-6 shadow-[inset_0_0_1px_rgba(255,255,255,0.3),0_24px_90px_-30px_rgba(255,149,0,0.45)] hover:shadow-[inset_0_0_1px_rgba(255,255,255,0.35),0_36px_140px_-30px_rgba(255,149,0,0.55)] transition duration-300"
           >
             <blockquote className="text-sm opacity-80">"{t.quote}"</blockquote>
             <figcaption className="mt-4">
