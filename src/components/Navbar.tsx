@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 import Image from "next/image";
-import minisologo from "/public/minisologo.jpeg"; 
+import minisologo from "public/minisologo.jpeg"; 
 
 export default function Navbar() {
   const [mounted, setMounted] = useState(false);
