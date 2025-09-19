@@ -4,6 +4,7 @@ import VisualEditsMessenger from "../visual-edits/VisualEditsMessenger";
 import ErrorReporter from "@/components/ErrorReporter";
 import Script from "next/script";
 import Navbar from "@/components/Navbar";
+import CartProvider from "@/components/CartProvider";
 
 export const metadata: Metadata = {
   title: "Minimo Retail — Your One-Stop Shop in Bangalore",
@@ -29,8 +30,10 @@ export default function RootLayout({
           data-debug="true"
           data-custom-data='{"appName": "YourApp", "version": "1.0.0", "greeting": "hi"}'
         />
-        <Navbar />
-        {children}
+        <CartProvider>
+          <Navbar />
+          {children}
+        </CartProvider>
         <VisualEditsMessenger />
       </body>
     </html>
