@@ -1,300 +1,137 @@
-"use client";
-
-import { Canvas } from "@react-three/fiber";
-import { Float, Stars, OrbitControls } from "@react-three/drei";
-import { useEffect, useMemo, useState } from "react";
-import { products } from "@/lib/products";
-import { useCart } from "@/components/CartProvider";
-
-function Planet() {
-  return (
-    <Float speed={1.5} rotationIntensity={0.6} floatIntensity={0.8}>
-      <mesh>
-        <sphereGeometry args={[1.2, 64, 64]} />
-        <meshStandardMaterial color="#7aa2ff" metalness={0.2} roughness={0.3} />
-      </mesh>
-      {/* ring */}
-      <mesh rotation={[Math.PI / 2.8, 0, 0]}>
-        <torusGeometry args={[2.1, 0.04, 32, 128]} />
-        <meshStandardMaterial color="#e60023" emissive="#e60023" emissiveIntensity={0.3} />
-      </mesh>
-    </Float>
-  );
-}
-
-function Hero3D() {
-  return (
-    <div className="absolute inset-0 -z-10">
-      <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
-        <ambientLight intensity={0.7} />
-        <directionalLight position={[5, 5, 5]} intensity={1.2} />
-        <Stars radius={80} depth={60} count={1000} factor={4} saturation={0} fade speed={0.6} />
-        <Planet />
-        <OrbitControls enablePan={false} enableZoom={false} autoRotate autoRotateSpeed={0.6} />
-      </Canvas>
-    </div>
-  );
-}
-
-function GlassCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return (
-    <div className={`rounded-2xl border border-white/10 bg-white/30 dark:bg-black/30 backdrop-blur-xl shadow-[0_0_1px_0_rgba(255,255,255,0.3)_inset,0_20px_80px_-20px_rgba(99,102,241,0.35)] ${className}`}>
-      {children}
-    </div>
-  );
-}
-
-function useOnboarding() {
-  const [show, setShow] = useState(false);
-  useEffect(() => {
-    const done = localStorage.getItem("minimo_onboarded");
-    setShow(!done);
-  }, []);
-  const complete = () => {
-    localStorage.setItem("minimo_onboarded", "1");
-    setShow(false);
-  };
-  return { show, complete };
-}
-
-function OnboardingSlide({ title, subtitle }: { title: string; subtitle: string }) {
-  return (
-    <GlassCard className="p-6 md:p-8 w-[min(90vw,680px)]">
-      <div className="relative h-[280px] md:h-[340px] rounded-xl overflow-hidden">
-        <Canvas camera={{ position: [0, 0, 5] }}>
-          <ambientLight intensity={0.7} />
-          <directionalLight position={[3, 5, 5]} intensity={1.1} />
-          <Stars radius={60} depth={40} count={600} factor={3} fade speed={0.7} />
-          <Float speed={2} rotationIntensity={1} floatIntensity={0.9}>
-            <mesh rotation={[0.2, 0.2, 0]}>
-              <icosahedronGeometry args={[1.2, 0]} />
-              <meshStandardMaterial color="#a78bfa" roughness={0.2} metalness={0.6} />
-            </mesh>
-          </Float>
-        </Canvas>
-      </div>
-      <div className="mt-5">
-        <h3 className="text-xl md:text-2xl font-semibold tracking-tight">{title}</h3>
-        <p className="text-sm md:text-base opacity-80 mt-1">{subtitle}</p>
-      </div>
-    </GlassCard>
-  );
-}
-
-function OnboardingModal({ onDone }: { onDone: () => void }) {
-  const [index, setIndex] = useState(0);
-  const slides = useMemo(
-    () => [
-      { title: "Welcome to MINIMO", subtitle: "Futuristic retail with comet-inspired UI and micro-motion." },
-      { title: "Immersive 3D", subtitle: "Explore orbiting visuals, starfields and floating products." },
-      { title: "Seamless Shopping", subtitle: "Glassmorphic cart and lightning-fast checkout." },
-    ],
-    []
-  );
-
-  const next = () => setIndex((i) => Math.min(i + 1, slides.length - 1));
-  const prev = () => setIndex((i) => Math.max(i - 1, 0));
-  const done = () => onDone();
-
-  return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-[radial-gradient(60%_60%_at_50%_50%,rgba(255,255,255,0.8),transparent_70%)] dark:bg-[radial-gradient(60%_60%_at_50%_50%,rgba(0,0,0,0.8),transparent_70%)] p-4">
-      <div className="relative">
-        <OnboardingSlide key={index} title={slides[index].title} subtitle={slides[index].subtitle} />
-        <div className="mt-4 flex items-center justify-between">
-          <button onClick={prev} disabled={index === 0} className="px-4 h-10 rounded-full border border-border/70 bg-background/60 disabled:opacity-40">Back</button>
-          {index < slides.length - 1 ? (
-            <div className="flex items-center gap-2">
-              <div className="flex gap-1">
-                {slides.map((_, i) => (
-                  <span key={i} className={`h-1.5 w-6 rounded-full ${i === index ? "bg-foreground/80" : "bg-foreground/20"}`} />
-                ))}
-              </div>
-              <button onClick={next} className="px-5 h-10 rounded-full border border-transparent bg-foreground text-background hover:opacity-90 transition">Next</button>
-            </div>
-          ) : (
-            <button onClick={done} className="px-5 h-10 rounded-full border border-transparent bg-foreground text-background hover:opacity-90 transition">Start exploring</button>
-          )}
-        </div>
-        <button onClick={done} className="absolute -top-2 -right-2 h-9 w-9 rounded-full border border-border/70 bg-background/70">✕</button>
-      </div>
-    </div>
-  );
-}
-
 export default function Home() {
-  const { show, complete } = useOnboarding();
-  const { add } = useCart();
-
-  // Tabs: New Arrivals / Best Sellers
-  const [tab, setTab] = useState<"new" | "best">("new");
-  const newProducts = useMemo(() => products.slice(0, 3), []);
-  const bestProducts = useMemo(() => products.slice(3), []);
-  const display = tab === "new" ? newProducts : bestProducts;
-
-  // Hero slider (simple auto-play)
-  const [slide, setSlide] = useState(0);
-  const slides = useMemo(() => [products[0]?.image, products[1]?.image, products[2]?.image].filter(Boolean) as string[], []);
-  useEffect(() => {
-    if (!slides.length) return;
-    const id = setInterval(() => setSlide((s) => (s + 1) % slides.length), 4000);
-    return () => clearInterval(id);
-  }, [slides.length]);
-
-  // Category tiles (derive cover per category)
-  const categoryCovers = useMemo(() => {
-    const cats = ["Accessories", "Apparel", "Electronics", "Footwear"] as const;
-    return cats.map((c) => ({
-      name: c,
-      href: `/shop?category=${encodeURIComponent(c.toLowerCase())}`,
-      image: products.find((p) => p.category === c)?.image,
-    }));
-  }, []);
-
   return (
-    <main className="relative min-h-[calc(100vh-4rem)] overflow-hidden">
-      {/* Promo bar (MINISO style) */}
-      <div className="relative z-10 bg-[#E4002B] text-white text-xs md:text-sm">
-        <div className="max-w-7xl mx-auto px-6 py-2 flex flex-col sm:flex-row items-center gap-2 sm:gap-3 sm:justify-between">
-          <span className="font-medium">New Arrivals • Festive Offers Live</span>
-          <div className="flex gap-4 opacity-95">
-            <a href="/shop" className="underline-offset-2 hover:underline">Shop</a>
-            <a href="/contact" className="underline-offset-2 hover:underline">Contact</a>
-          </div>
-        </div>
-      </div>
-
-      {/* Comet gradient backdrop */}
+    <main className="min-h-[calc(100vh-4rem)]">
+      {/* Background illustration */}
       <div className="pointer-events-none absolute inset-0 -z-10 [mask-image:radial-gradient(60%_60%_at_50%_20%,black,transparent_80%)]">
-        <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-[60rem] w-[60rem] rounded-full bg-[conic-gradient(at_30%_30%,#E4002B_0deg,#a78bfa_120deg,#22d3ee_240deg,#E4002B_360deg)] blur-3xl opacity-40" />
+        <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-[60rem] w-[60rem] rounded-full bg-[conic-gradient(at_30%_30%,#93c5fd_0deg,#c4b5fd_120deg,#99f6e4_240deg,#93c5fd_360deg)] blur-3xl opacity-30" />
       </div>
 
-      <Hero3D />
-
-      {/* Hero copy */}
-      <section className="relative z-10 max-w-7xl mx-auto px-6 pt-16 pb-6 text-center">
-        <h1 className="text-4xl md:text-6xl font-semibold tracking-tight">
-          MINIMO
-          <span className="block text-base md:text-lg tracking-[0.4em] mt-2 opacity-70">RETAIL BANGALORE</span>
+      {/* Hero */}
+      <section className="relative z-10 max-w-6xl mx-auto px-6 pt-16 pb-16 md:pt-24 md:pb-24 text-center">
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/40 dark:bg-black/30 backdrop-blur px-3 py-1 text-xs shadow-[inset_0_0_1px_0_rgba(255,255,255,0.3),0_12px_40px_-12px_rgba(99,102,241,0.35)]">
+          <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_0_3px_rgba(16,185,129,0.25)]" />
+          Modern UI Kit
+        </div>
+        <h1 className="mt-4 text-4xl md:text-6xl font-semibold tracking-tight">
+          Design that feels light, soft, and alive
         </h1>
-        <p className="mt-4 text-base md:text-lg opacity-80 max-w-2xl mx-auto">
-          A comet-borne shopping experience. Nebula gradients, glassmorphic cards, and orbiting visuals come together for the future of retail.
+        <p className="mt-5 text-base md:text-lg opacity-80 max-w-2xl mx-auto">
+          Build beautiful, responsive interfaces with glassmorphism, soft shadows, and silky hover effects — production ready with Tailwind CSS.
         </p>
         <div className="mt-8 flex items-center justify-center gap-3">
-          <a href="/shop" className="px-6 h-12 rounded-full bg-[#E4002B] text-white shadow hover:opacity-90 transition">New Arrivals</a>
-          <a href="#learn" className="px-6 h-12 rounded-full border border-border/70 bg-background/60 backdrop-blur hover:bg-accent/40 transition">Learn more</a>
+          <a href="#get-started" className="px-6 h-12 rounded-full bg-foreground text-background shadow-lg shadow-black/10 hover:shadow-xl hover:shadow-black/15 hover:-translate-y-0.5 transition will-change-transform">
+            Get Started
+          </a>
+          <a href="#features" className="px-6 h-12 rounded-full border border-border/70 bg-background/60 backdrop-blur hover:bg-accent/40 transition">
+            Explore Features
+          </a>
         </div>
-      </section>
-
-      {/* Hero slider */}
-      <section className="relative z-10 max-w-7xl mx-auto px-6 pb-12">
-        <div className="rounded-2xl overflow-hidden border border-white/10 bg-white/30 dark:bg-black/30 backdrop-blur-xl">
-          <div className="relative h-[200px] sm:h-[280px] md:h-[360px]">
-            <div className="absolute inset-0 flex transition-transform duration-700" style={{ transform: `translateX(-${slide * 100}%)` }}>
-              {slides.map((src, i) => (
-                <div key={i} className="min-w-full h-full relative">
-                  <img src={src} alt="Banner" className="absolute inset-0 w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/50 to-transparent" />
-                </div>
-              ))}
-            </div>
-            {/* Dots */}
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
-              {slides.map((_, i) => (
-                <button key={i} onClick={() => setSlide(i)} className={`h-1.5 w-6 rounded-full ${i === slide ? "bg-foreground/80" : "bg-foreground/30"}`} />
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Quick categories (MINISO-like) */}
-      <section className="relative z-10 max-w-7xl mx-auto px-6 -mt-2 pb-8">
-        <div className="flex flex-wrap justify-center gap-3">
-          <a href="/shop?category=new" className="px-4 h-10 rounded-full border border-[#E4002B]/30 bg-white text-[#E4002B] hover:bg-[#E4002B] hover:text-white transition">New</a>
-          <a href="/shop?category=toys" className="px-4 h-10 rounded-full border border-[#E4002B]/30 bg-white text-[#E4002B] hover:bg-[#E4002B] hover:text-white transition">Toys</a>
-          <a href="/shop?category=home" className="px-4 h-10 rounded-full border border-[#E4002B]/30 bg-white text-[#E4002B] hover:bg-[#E4002B] hover:text-white transition">Home</a>
-          <a href="/shop?category=beauty" className="px-4 h-10 rounded-full border border-[#E4002B]/30 bg-white text-[#E4002B] hover:bg-[#E4002B] hover:text-white transition">Beauty</a>
-          <a href="/shop?category=stationery" className="px-4 h-10 rounded-full border border-[#E4002B]/30 bg-white text-[#E4002B] hover:bg-[#E4002B] hover:text-white transition">Stationery</a>
-        </div>
-      </section>
-
-      {/* Shop by Category tiles */}
-      <section className="relative z-10 max-w-7xl mx-auto px-6 pb-16">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {categoryCovers.map((c) => (
-            <a key={c.name} href={c.href} className="group relative rounded-2xl overflow-hidden border border-white/10 bg-white/20 dark:bg-black/20 backdrop-blur-xl">
-              {c.image && <img src={c.image} alt={c.name} className="h-40 md:h-48 w-full object-cover group-hover:scale-105 transition" />}
-              <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
-              <div className="absolute bottom-3 left-3 px-3 py-1.5 rounded-full bg-[#E4002B] text-white text-xs font-medium">{c.name}</div>
-            </a>
-          ))}
-        </div>
-      </section>
-
-      {/* Featured products with tabs */}
-      <section id="learn" className="relative z-10 max-w-7xl mx-auto px-6 pb-28">
-        <div className="mb-5 flex items-center justify-center gap-2">
-          <button onClick={() => setTab("new")} className={`px-4 h-9 rounded-full border transition ${tab === "new" ? "bg-[#E4002B] text-white border-transparent" : "bg-background/70 border-border/70 hover:bg-accent/40"}`}>New Arrivals</button>
-          <button onClick={() => setTab("best")} className={`px-4 h-9 rounded-full border transition ${tab === "best" ? "bg-[#E4002B] text-white border-transparent" : "bg-background/70 border-border/70 hover:bg-accent/40"}`}>Best Sellers</button>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {display.map((p, idx) => (
-            <GlassCard key={p.id} className="p-4 group relative overflow-hidden">
-              <div className="absolute -inset-20 bg-gradient-to-tr from-orange-400/20 via-violet-400/20 to-cyan-300/20 blur-3xl opacity-0 group-hover:opacity-100 transition" />
-              <div className="aspect-[4/3] rounded-xl overflow-hidden relative">
-                <a href={`/product/${p.slug}`}>
-                  <img
-                    alt={p.name}
-                    src={p.image}
-                    className="h-full w-full object-cover"
+        {/* Illustration */}
+        <div className="mt-12">
+          <div className="mx-auto max-w-5xl rounded-2xl border border-white/10 bg-white/30 dark:bg-black/30 backdrop-blur-xl overflow-hidden shadow-[inset_0_0_1px_rgba(255,255,255,0.3),0_30px_120px_-40px_rgba(99,102,241,0.45)]">
+            <div className="aspect-[16/9] bg-gradient-to-br from-sky-200/50 via-violet-200/50 to-teal-200/50 dark:from-sky-950/40 dark:via-violet-950/40 dark:to-teal-950/40 relative">
+              <div className="absolute inset-0 grid grid-cols-6 gap-2 p-6">
+                {[...Array(18)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="rounded-xl bg-white/50 dark:bg-white/5 border border-white/20 backdrop-blur-sm shadow-[0_10px_30px_-12px_rgba(37,99,235,0.25)] hover:shadow-[0_18px_50px_-12px_rgba(37,99,235,0.35)] transition duration-300"
                   />
-                </a>
-                <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
-                {/* Badge */}
-                <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-medium bg-[#E4002B] text-white">{tab === "new" ? "NEW" : idx % 2 === 0 ? "HOT" : "-20%"}</div>
+                ))}
               </div>
-              <div className="mt-3 flex items-start justify-between gap-3">
-                <div>
-                  <h3 className="font-medium">{p.name}</h3>
-                  <p className="text-sm opacity-70">{p.color}</p>
-                  <p className="text-sm mt-1 font-semibold">₹{p.price.toLocaleString("en-IN")}</p>
-                </div>
-                <button onClick={() => add(p, 1)} className="px-3 h-9 rounded-full border border-border/70 bg-background/70 hover:bg-accent/40 transition">Add</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section id="features" className="relative z-10 max-w-6xl mx-auto px-6 pb-20 md:pb-28">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">Everything you need to ship</h2>
+          <p className="mt-2 opacity-70">Reusable components, refined shadows, and a consistent palette.</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            { title: "Glassmorphism", desc: "Translucent surfaces with tasteful blur and inner glow.", icon: (
+              <svg viewBox="0 0 24 24" className="h-6 w-6"><path fill="currentColor" d="M5 4h14a1 1 0 0 1 1 1v8.5a4.5 4.5 0 0 1-4.5 4.5H9A5 5 0 0 1 4 13V5a1 1 0 0 1 1-1Z"/></svg>
+            )},
+            { title: "Soft Shadows", desc: "Neumorphic depth with gentle, layered drop shadows.", icon: (
+              <svg viewBox="0 0 24 24" className="h-6 w-6"><path fill="currentColor" d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z"/></svg>
+            )},
+            { title: "Smooth Hover", desc: "Micro-interactions that feel delightful and responsive.", icon: (
+              <svg viewBox="0 0 24 24" className="h-6 w-6"><path fill="currentColor" d="M3 12h18M12 3v18"/></svg>
+            )},
+            { title: "Responsive", desc: "Looks perfect on phones, tablets, and desktops.", icon: (
+              <svg viewBox="0 0 24 24" className="h-6 w-6"><path fill="currentColor" d="M3 6h18v10H3zM7 18h10v2H7z"/></svg>
+            )},
+          ].map((f) => (
+            <div
+              key={f.title}
+              className="group rounded-2xl border border-white/10 bg-white/30 dark:bg-black/30 backdrop-blur-xl p-5 shadow-[inset_0_0_1px_rgba(255,255,255,0.3),0_20px_80px_-30px_rgba(99,102,241,0.45)] hover:shadow-[inset_0_0_1px_rgba(255,255,255,0.35),0_30px_120px_-30px_rgba(99,102,241,0.55)] transition duration-300 will-change-transform hover:-translate-y-0.5"
+            >
+              <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400/20 to-violet-400/20 text-foreground shadow-inner">
+                {f.icon}
               </div>
-            </GlassCard>
+              <h3 className="mt-3 font-medium">{f.title}</h3>
+              <p className="mt-1 text-sm opacity-70">{f.desc}</p>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* Store locator */}
-      <section className="relative z-10 max-w-7xl mx-auto px-6 pb-20">
-        <GlassCard className="p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center gap-6">
-          <div className="flex-1">
-            <h3 className="text-xl md:text-2xl font-semibold tracking-tight">Visit our Bengaluru store</h3>
-            <p className="mt-2 text-sm opacity-80">582, 10th Main Road, ISRO Layout, Bengaluru, Karnataka, 560076</p>
+      {/* Testimonials */}
+      <section id="testimonials" className="relative z-10 max-w-6xl mx-auto px-6 pb-20 md:pb-28">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">Loved by designers and developers</h2>
+          <p className="mt-2 opacity-70">Hear what people say about the experience.</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            { name: "Ava Thompson", role: "Product Designer", quote: "The soft-shadow aesthetic is gorgeous out of the box." },
+            { name: "Liam Carter", role: "Frontend Engineer", quote: "Animations feel buttery smooth without extra libraries." },
+            { name: "Maya Patel", role: "Founder", quote: "I shipped a polished site in a day. It just works." },
+          ].map((t) => (
+            <figure
+              key={t.name}
+              className="rounded-2xl border border-white/10 bg-white/30 dark:bg-black/30 backdrop-blur-xl p-6 shadow-[inset_0_0_1px_rgba(255,255,255,0.3),0_24px_90px_-30px_rgba(99,102,241,0.45)] hover:shadow-[inset_0_0_1px_rgba(255,255,255,0.35),0_36px_140px_-30px_rgba(99,102,241,0.55)] transition duration-300"
+            >
+              <blockquote className="text-sm opacity-80">"{t.quote}"</blockquote>
+              <figcaption className="mt-4">
+                <div className="font-medium">{t.name}</div>
+                <div className="text-xs opacity-60">{t.role}</div>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section id="get-started" className="relative z-10 max-w-6xl mx-auto px-6 pb-24">
+        <div className="rounded-2xl border border-white/10 bg-white/30 dark:bg-black/30 backdrop-blur-xl p-8 md:p-12 text-center shadow-[inset_0_0_1px_rgba(255,255,255,0.3),0_30px_120px_-40px_rgba(99,102,241,0.45)]">
+          <h3 className="text-xl md:text-2xl font-semibold tracking-tight">Ready to craft something beautiful?</h3>
+          <p className="mt-2 opacity-75">Start with our modern, soft-shadow UI patterns and ship today.</p>
+          <div className="mt-6">
+            <a className="inline-flex items-center justify-center px-6 h-12 rounded-full bg-foreground text-background shadow-lg shadow-black/10 hover:shadow-xl hover:-translate-y-0.5 transition" href="#">
+              Build your page
+            </a>
           </div>
-          <a href="https://www.google.com/maps/search/?api=1&query=582,+10th+Main+Road,+ISRO+Layout,+Bengaluru,+Karnataka,+560076" className="px-5 h-11 rounded-full bg-[#E4002B] text-white hover:opacity-90 transition">Open in Maps</a>
-        </GlassCard>
+        </div>
       </section>
 
       {/* Footer */}
       <footer className="relative z-10 border-t border-border/60 bg-background/60 backdrop-blur">
-        <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+        <div className="max-w-6xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
           <div>
-            <div className="text-lg font-semibold">MINIMO</div>
-            <div className="text-[10px] tracking-[0.2em] opacity-70">RETAIL BANGALORE</div>
-            <div className="mt-2 text-xs opacity-70">582, 10th Main Road, ISRO Layout, Bengaluru, Karnataka, 560076</div>
+            <div className="text-lg font-semibold">SoftUI</div>
+            <div className="text-[10px] tracking-[0.2em] opacity-70">MODERN LANDING</div>
           </div>
           <nav className="flex gap-6 justify-center text-sm">
-            <a href="/about" className="opacity-80 hover:opacity-100">About</a>
-            <a href="/contact" className="opacity-80 hover:opacity-100">Contact</a>
-            <a href="/shop" className="opacity-80 hover:opacity-100">Shop</a>
+            <a href="#features" className="opacity-80 hover:opacity-100 transition">Features</a>
+            <a href="#" className="opacity-80 hover:opacity-100 transition">Docs</a>
+            <a href="#" className="opacity-80 hover:opacity-100 transition">Contact</a>
           </nav>
-          <div className="text-sm md:text-right opacity-70">© {new Date().getFullYear()} MINIMO</div>
+          <div className="text-sm md:text-right opacity-70">© {new Date().getFullYear()} SoftUI</div>
         </div>
       </footer>
-
-      {show && <OnboardingModal onDone={complete} />}
     </main>
   );
 }

@@ -4,8 +4,6 @@ import VisualEditsMessenger from "../visual-edits/VisualEditsMessenger";
 import ErrorReporter from "@/components/ErrorReporter";
 import Script from "next/script";
 import Navbar from "@/components/Navbar";
-import CartProvider from "@/components/CartProvider";
-import CartDrawer from "@/components/CartDrawer";
 
 export const metadata: Metadata = {
   title: "MINIMO — Retail Bangalore",
@@ -31,11 +29,8 @@ export default function RootLayout({
           data-debug="true"
           data-custom-data='{"appName": "YourApp", "version": "1.0.0", "greeting": "hi"}'
         />
-        <CartProvider>
-          <Navbar />
-          {children}
-          <CartDrawer />
-        </CartProvider>
+        <Navbar />
+        {children}
         <VisualEditsMessenger />
       </body>
     </html>
