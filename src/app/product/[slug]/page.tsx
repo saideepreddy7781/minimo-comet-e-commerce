@@ -3,9 +3,11 @@
 import { notFound } from "next/navigation";
 import { getProductBySlug } from "@/lib/products";
 import { useCart } from "@/components/CartProvider";
+import { use } from "react";
 
-export default function ProductPage({ params }: { params: { slug: string } }) {
-  const product = getProductBySlug(params.slug);
+export default function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = use(params);
+  const product = getProductBySlug(resolvedParams.slug);
   const { add } = useCart();
   if (!product) return notFound();
 
