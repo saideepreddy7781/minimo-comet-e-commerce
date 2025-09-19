@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
-import Image from "next/image"; 
+import Image from "next/image";
 
 export default function Navbar() {
   const [mounted, setMounted] = useState(false);
@@ -32,10 +32,10 @@ export default function Navbar() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50">
+    <header className="sticky top-0 z-50">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="mt-4 rounded-2xl border border-white/10 bg-white/40 dark:bg-black/30 backdrop-blur supports-[backdrop-filter]:bg-white/30 
-          shadow-[inset_0_0_1px_rgba(255,255,255,0.35),0_20px_60px_-20px_rgba(255,215,0,0.45)]">
+          shadow-[inset_0_0_1px_rgba(255,255,255,0.35),0_20px_60px_-20px_rgba(255,149,0,0.45)]">
           <nav className="flex items-center justify-between px-4 sm:px-6 h-14">
             <Link href="/" className="inline-flex items-center gap-3 group">
               <Image src="/minisologo.jpeg" alt="MINIMO Logo" width={28} height={28} className="h-7 w-7" />
